@@ -24,9 +24,29 @@ const copy = async () => {
     fs.constants.F_OK,
     (err) => {
       if (err) throwError();
+
+      // Избегаем гонки ассинхронных функций
+      secondCheck();
     }
   );
 
+  /* // Проверяем существование директории "files_copy"
+  fs.access(
+    path.join(dto.currentDirPath, dto.newDirName),
+    fs.constants.F_OK,
+    (err) => {
+      if (err) {
+        // Папки "files_copy" не существует, копируем.
+        console.log(`${dto.userName}, всё  чики пуки, копиуем файлы...`);
+        copyToNewDir();
+      } else {
+        throwError();
+      }
+    }
+  ); */
+};
+
+const secondCheck = () => {
   // Проверяем существование директории "files_copy"
   fs.access(
     path.join(dto.currentDirPath, dto.newDirName),
