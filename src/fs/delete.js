@@ -13,30 +13,24 @@ const dto = {
   targetFileName: "fileToRemove.txt",
   targetDirName: "files",
   currentDirPath: path.join(import.meta.dirname),
+  filePath: path.join(import.meta.dirname, "files", "fileToRemove.txt"),
 };
 
 const remove = async () => {
   // проверка на существование файла fileToRemove.txt
-  fs.access(
-    path.join(dto.currentDirPath, dto.targetDirName, dto.targetFileName),
-    fs.constants.F_OK,
-    targetFileRemoveHandler
-  );
+  fs.access(dto.filePath, fs.constants.F_OK, targetFileRemoveHandler);
 };
 
 const targetFileRemoveHandler = (err) => {
   if (err) throwError();
 
-  fs.unlink(
-    path.join(dto.currentDirPath, dto.targetDirName, dto.targetFileName),
-    (err) => {
-      if (err) {
-        console.error(`О повелитель, случилась чуудовищная ОШИБКА!`, err);
-      } else {
-        throwSuccess("всё  чики пуки, файл удалён...");
-      }
+  fs.unlink(dto.filePath, (err) => {
+    if (err) {
+      console.error(`О повелитель, случилась чуудовищная ОШИБКА!`, err);
+    } else {
+      throwSuccess("всё  чики пуки, файл удалён...");
     }
-  );
+  });
 };
 
 await remove();
