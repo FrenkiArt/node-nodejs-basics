@@ -1,5 +1,7 @@
-const copy = async () => {
-    // Write your code here 
-};
+import fs from "fs";
+import os from "os";
+import path from "path";
+
+const copy = async () => {};
 
 await copy();
