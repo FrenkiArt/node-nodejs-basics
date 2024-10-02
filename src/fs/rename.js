@@ -47,8 +47,11 @@ const makeRename = () => {
     path.join(dto.currentDirPath, dto.targetDirName, dto.targetFileName),
     path.join(dto.currentDirPath, dto.targetDirName, dto.properFileName),
     (err) => {
-      if (err) throwError();
-      throwSuccess("всё  чики пуки, файл переименован...");
+      if (err) {
+        throwError();
+      } else {
+        throwSuccess("всё  чики пуки, файл переименован...");
+      }
     }
   );
 };
