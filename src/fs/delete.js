@@ -25,11 +25,13 @@ const remove = async () => {
 };
 
 const targetFileRemoveHandler = (err) => {
+  if (err) throwError();
+
   fs.unlink(
     path.join(dto.currentDirPath, dto.targetDirName, dto.targetFileName),
     (err) => {
       if (err) {
-        throwError();
+        console.error(`О повелитель, случилась чуудовищная ОШИБКА!`, err);
       } else {
         throwSuccess("всё  чики пуки, файл удалён...");
       }
