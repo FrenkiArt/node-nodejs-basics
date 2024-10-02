@@ -48,7 +48,7 @@ const makeRename = () => {
     path.join(dto.currentDirPath, dto.targetDirName, dto.properFileName),
     (err) => {
       if (err) {
-        throwError();
+        console.error(`О повелитель, случилась чуудовищная ОШИБКА!`, err);
       } else {
         throwSuccess("всё  чики пуки, файл переименован...");
       }
