@@ -17,13 +17,7 @@ class hashTransform extends stream.Transform {
   }
 
   _transform(chunk, encoding, callback) {
-    //this.push(createHmac("sha256", this.secret).update(chunk).digest("hex"));
-
-    this.push(
-      Buffer.from(
-        createHmac("sha256", this.secret).update(chunk).digest("hex")
-      ).toString()
-    );
+    this.push(createHmac("sha256", this.secret).update(chunk).digest("hex"));
 
     if (callback) callback();
   }
