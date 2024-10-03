@@ -11,19 +11,26 @@ as hex using Streams API
 */
 
 class hashTransform extends stream.Transform {
-  constructor() {
+  constructor(secret) {
     super();
+    this.secret = secret;
   }
 
   _transform(chunk, encoding, callback) {
-    this.push(createHmac("sha256", secret).update(chunk).digest("hex"));
+    //this.push(createHmac("sha256", this.secret).update(chunk).digest("hex"));
+
+    this.push(
+      Buffer.from(
+        createHmac("sha256", this.secret).update(chunk).digest("hex")
+      ).toString()
+    );
 
     if (callback) callback();
   }
 }
 
 // взято из документации https://nodejs.org/api/crypto.html
-const secret = "abcdefg";
+const mySecret = "abcdefg";
 
 const calculateHash = async () => {
   const targetPath = path.join(
@@ -33,14 +40,17 @@ const calculateHash = async () => {
   );
 
   const readableStream = fs.createReadStream(targetPath);
-  const hashStream = new hashTransform();
+  const hashStream = new hashTransform(mySecret);
 
   readableStream.setEncoding("utf8");
 
-  readableStream.pipe(hashStream).pipe(process.stdout);
-
+  //readableStream.pipe(hashStream).pipe(process.stdout);
   // не понимаю, вот так работает node .\src\hash\calcHash.js
   // при написании npm run hash , на сегудну показывает и скрывает
+
+  readableStream.pipe(hashStream).on("data", (data) => {
+    console.log(data.toString());
+  });
 };
 
 await calculateHash();
