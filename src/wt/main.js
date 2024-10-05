@@ -30,30 +30,42 @@ const performCalculations = async () => {
   if (isMainThread) {
     const worker = new Worker(path.join(import.meta.dirname, "worker.js"));
 
-    // Создаем массив результатов
+    const workers = [];
     const results = [];
     let startCount = 9;
 
     // Передача данных в рабочий поток и получение результатов
     for (let i = 0; i <= cpuCount; ++i) {
+      worker.index = i;
       worker.postMessage(startCount); // Отправляем данные в рабочий поток
+      workers.push(worker);
 
       let result = {};
 
-      try {
-        worker.on("message", (data) => {
-          result.status = "resolved";
-          result.data = data;
+      worker.on("message", (data) => {
+        result.status = "resolved";
+        result.data = data;
 
-          results.push(result);
+        results.push(result);
+
+        if (worker.index === cpuCount) {
           console.log(results);
+        }
 
-          worker.terminate();
-        });
-      } catch (error) {
+        worker.terminate();
+      });
+
+      worker.on("error", () => {
         result.status = "error";
         result.data = null;
-      }
+        result.index = worker.index;
+
+        results.push(result);
+
+        if (worker.index === cpuCount) {
+          console.log(results);
+        }
+      });
 
       startCount++;
     }
